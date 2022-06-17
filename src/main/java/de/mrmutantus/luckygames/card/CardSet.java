@@ -16,7 +16,7 @@ public class CardSet {
     }
 
     public Card drawCard() {
-        int size = cards.size() - 1;
+        int size = cards.size();
         int index = rng.nextInt(size);
         return cards.remove(index);
     }
