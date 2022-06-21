@@ -1,17 +1,14 @@
 package de.mrmutantus.luckygames.games.highlow;
 
-import de.mrmutantus.luckygames.Game;
 import de.mrmutantus.luckygames.card.Card;
 import de.mrmutantus.luckygames.card.CardSet;
+import de.mrmutantus.luckygames.games.Game;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.util.Scanner;
 
-@Service
 public class HighLow implements Game {
-    Logger LOG = LoggerFactory.getLogger(HighLow.class);
+    Logger LOG;
     private final CardSet cardset;
     Scanner scanner;
     String input;
@@ -19,9 +16,10 @@ public class HighLow implements Game {
     private Card lastCard;
     boolean win;
 
-    public HighLow() {
+    public HighLow(Logger logger, Scanner scanner) {
+        LOG = logger;
         LOG.info("Initialize HighLow Game...");
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
         this.cardset = new CardSet(10, 4);
         LOG.info("Shuffle cards...");
         cardset.shuffle();
@@ -39,6 +37,10 @@ public class HighLow implements Game {
         LOG.info(actualCard + " drawn.");
         win = this.getResult();
         announceWin();
+        if (cardset.getCards().size() < 10) {
+            LOG.info("shuffling cards...");
+            cardset.shuffle();
+        }
     }
 
     private void announceWin() {
@@ -64,7 +66,7 @@ public class HighLow implements Game {
     }
 
     private void displayInstructions() {
-        System.out.println("Geben sie ihre Wette ab.\nIst die kommende Karte (gr)ößer, (kl)einer oder (gl)eich groß?");
+        LOG.info("Geben sie ihre Wette ab.\nIst die kommende Karte (gr)ößer, (kl)einer oder (gl)eich groß?");
     }
 
     private String getUserInput() {
